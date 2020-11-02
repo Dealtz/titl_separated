@@ -97,7 +97,7 @@ public class ParseLibrary
 //            System.out.println(ir);
 //        }
 
-        Library library = new Library(hdr, path, pl.playlists, pl.podcasts, pl.tracks, pl.resourcesWithArtwork);
+        Library library = new Library(hdr, path, pl.playlists, pl.podcasts, pl.tracks, pl.diagnostics, pl.resourcesWithArtwork);
         return library;
     }
 
