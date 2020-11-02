@@ -151,7 +151,7 @@ public class ParseLibrary
 
 //                System.out.printf("hohm type: 0x%02x - ", hohmType);
 
-                thisChunk.more = hohmType;
+                thisChunk.more = String.format("0x%-3x", hohmType);
 
                 switch (hohmType)
                 {
@@ -354,6 +354,23 @@ public class ParseLibrary
                         di.readFully(xmlBa);
                         String plist = new String(xmlBa);
                         consumed = recLength;
+                        thisChunk.details = plist;
+                        break;
+
+                    case 0x3B: // appleId for apps
+                        String appleId = readGenericHohm(di);
+                        consumed = recLength;
+                        thisChunk.more = String.format("0x%-3x", hohmType) + " [appleId]";
+                        thisChunk.details = appleId;
+                        // System.out.println(String.format("0x%08x: %s (%4d) %s \"%s\"", thisChunk.origin, thisChunk.type, thisChunk.length, thisChunk.more, thisChunk.details));
+                        break;
+
+                    case 0x3C: // userName for apps
+                        String userName = readGenericHohm(di);
+                        thisChunk.more = String.format("0x%-3x", hohmType) + " [userName]";
+                        thisChunk.details = userName;
+                        consumed = recLength;
+                        // System.out.println(String.format("0x%08x: %s (%4d) %s \"%s\"", thisChunk.origin, thisChunk.type, thisChunk.length, thisChunk.more, thisChunk.details));
                         break;
 
                     case 0x09: // iTunes category?
@@ -381,7 +398,7 @@ public class ParseLibrary
                     case 0x191: // Artist name without 'The'; sort artist
                         String val = readGenericHohm(di);
                         consumed = recLength;
-                        thisChunk.more = hohmType + " [ignored] " + val;
+                        thisChunk.more = String.format("0x%-3x", hohmType) + " [ignored] readGenericHohm print:" + val;
                         break;
 
                     case 0x65: // Smart criteria
@@ -437,13 +454,42 @@ public class ParseLibrary
                     case 0x1f7:
                     case 0x1f4:
                     case 0x202: // ?? XML plist
+                    case 0x205: // ?? Hex: 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x01 0x02 0x02 0x01 0x01 0x02 0x02 0x02 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 ASCII: ........................
+                    case 0x2BC: // ?? XML plist Hex: 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x3C 0x3F 0x78 0x6D 0x6C 0x20 0x76 0x65 0x72 0x73 0x69 0x6F 0x6E 0x3D 0x22 0x31 0x2E 0x30 0x22 0x20 0x65 0x6E 0x63 0x6F 0x64 0x69 0x6E 0x67 0x3D 0x22 0x55 0x54 0x46 0x2D 0x38 0x22 0x3F 0x3E 0x0A 0x3C 0x21 0x44 0x4F 0x43 0x54 0x59 0x50 0x45 0x20 0x70 0x6C 0x69 0x73 0x74 0x20 0x50 ... 
+                                // ASCII: ........
+                                // <?xml version="1.0" encoding="UTF-8"?>
+                                // <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+                                // <plist version="1.0">
+                                // <dict>
+                                //     <key>header</key>
+                                //     <data>
+                                //     cHFmcwAAAUB/gNiCYr1beAEAAAAAAABuAAAAbgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                                //     AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGX0WMxL+zToAAAAAAAAAANhM
+                                //     xiigkBHNAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGX0WMxL+zTptLPB4VerV29hMxiig
+                                //     kBHNq96+TQotoiwAAAAAAAAAAAAAAAAAAAAAGX0WMxL+zTpI28PekYRhO9hMxiigkBHN
+                                //     iNbGxzeIBK4AAAAAAAAAAAAAAAAAAAAAAAAADwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                                //     AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                                //     AAAAAAAAAAAAAAAAAAA=
+                                //     </data>
+                                //     <key>kind</key>
+                                //     <integer>1886155636</integer>
+                                // </dict>
+                                // </plist> 
                     case 0x320:
 //                        int words = (recLength - consumed) / 4;
 //                        hexDump(di, words);
 //                        hexDumpBytes(di, (recLength - consumed) - words * 4);
                         di.skipBytes(recLength - consumed);
                         consumed = recLength;
-                        thisChunk.more = hohmType + " [skipped]";
+                        thisChunk.more = String.format("0x%-3x", hohmType) + " [skipped] (unread)";
+                        // System.out.println(String.format("0x%08x: %s (%4d) %s \"%s\"", thisChunk.origin, thisChunk.type, thisChunk.length, thisChunk.more, thisChunk.details));
+                        break;
+                    case 0x2BE: // Another kind of title of music ???
+                        String unknown = readGenericHohm(di);
+                        thisChunk.more = String.format("0x%-3x", hohmType) + " [unknown]";
+                        thisChunk.details = unknown;
+                        consumed = recLength;
+                        // System.out.println(String.format("0x%08x: %s (%4d) %s \"%s\"", thisChunk.origin, thisChunk.type, thisChunk.length, thisChunk.more, thisChunk.details));
                         break;
 
                     //  GLH:    TV Show-related 'hohm's
@@ -453,7 +499,7 @@ public class ParseLibrary
                     case 0x19:  //  Episode ID (on 'Video' tab)             'Episode'
                     case 0x1a:  //  ?? Studio/Producer, e.g. "Fox"          --n/a--
                     case 0x1c:  //  mpaa Rating                             'Content Rating'
-                    case 0x1d:  //  ?? DTD for Propertylist                 --n/a--
+                    case 0x1d:  //  ?? DTD for Propertylist                 --n/a-- // Propertylist with file-size and flavor
                     case 0x23:  //  Sort-order for show title               'Sort Series'
                     case 0x130: //  ??  Show/Series: I think it's used for
                                 //      building the 'TV Shows' menu, since
@@ -465,10 +511,12 @@ public class ParseLibrary
                         break;
 
                     default:
+                        System.out.println(String.format("0x%08x: %s (%4d) %s \"%s\"", thisChunk.origin, thisChunk.type, thisChunk.length, thisChunk.more, thisChunk.details));
                         byte[] unknownHohmContents = new byte[recLength - consumed];
                         di.readFully(unknownHohmContents);
                         throw new UnknownHohmException(hohmType, unknownHohmContents);
                 }
+                System.out.println(String.format("0x%08x: %s (%4d) %s \"%s\"", thisChunk.origin, thisChunk.type, thisChunk.length, thisChunk.more, thisChunk.details));
             }
             else if(type.equals("hdsm"))
             {
@@ -501,7 +549,7 @@ public class ParseLibrary
                 consumed = length;
             }
             else if (type.equals("hghm") || type.equals("halm") || type.equals("hilm") || type.equals("htlm") || type.equals("hplm")
-                    || type.equals("hiim") || type.equals("hslm") || type.equals("hpsm"))
+            || type.equals("hiim") || type.equals("hqlm") || type.equals("hqim") || type.equals("hslm") || type.equals("hpsm"))
             {
                 di.skipBytes(length - consumed);
                 consumed = length;
@@ -512,6 +560,7 @@ public class ParseLibrary
 //                consumed = length;
 
                 if (Util.isIdentifier(type)) {
+                System.out.println(String.format("0x%08x: %s (%4d) %s \"%s\"", thisChunk.origin, thisChunk.type, thisChunk.length, thisChunk.more, thisChunk.details));
                     throw new ItlException("Unhandled type: " + type);
                 } else {
                     throw new ItlException("Library format not understood; bad decryption (unhandled type: "

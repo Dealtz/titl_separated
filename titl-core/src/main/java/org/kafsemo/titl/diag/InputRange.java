@@ -23,8 +23,8 @@ public class InputRange
     public final long origin;   // position of hdr.fileData
     public int length;          // block length:[4:7]
     public String type;         // block type:[0:3]
-    public Object more;         // for hohm block : hohmType:[8:11] + [] + val
-    public String details;      // contents in a lot of types 
+    public Object more;         // for hohm block : ("0x%-3x", hohmType:[8:11]) + " [] " + val
+    public String details;      // "contents" in a lot of types 
 
     public InputRange(long origin)
     {
