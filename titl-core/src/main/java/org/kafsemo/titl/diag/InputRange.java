@@ -20,11 +20,11 @@ package org.kafsemo.titl.diag;
 
 public class InputRange
 {
-    public final long origin;
-    public int length;
-    public String type;
-    public Object more;
-    public String details;
+    public final long origin;   // position of hdr.fileData
+    public int length;          // block length:[4:7]
+    public String type;         // block type:[0:3]
+    public Object more;         // for hohm block : hohmType:[8:11] + [] + val
+    public String details;      // contents in a lot of types 
 
     public InputRange(long origin)
     {
@@ -34,7 +34,7 @@ public class InputRange
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("%08d: %s (%d)", origin, type, length));
+        sb.append(String.format("0x%08x: %s (%4d)", origin, type, length));
         if (more != null) {
             sb.append(" ");
             sb.append(more);
@@ -44,6 +44,6 @@ public class InputRange
             sb.append(details);
             sb.append("\"");
         }
-        return sb.toString();
+        return sb.toString().replaceAll("(\\r\\n|\\n|\\n\\r)","<br/>");
     }
 }
