@@ -21,6 +21,7 @@ package org.kafsemo.titl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import org.kafsemo.titl.diag.InputRange;
 
 /**
  * A high-level view of a library, including all the data extracted.
@@ -32,16 +33,18 @@ public class Library
     private final Collection<Playlist> playlists;
     private final Collection<Podcast> podcasts;
     private final Collection<Track> tracks;
+    private final Collection<InputRange> diagnostics;
     private final Collection<Artwork> artwork;
 
     public Library(Hdfm header, String path, Collection<Playlist> playlists, Collection<Podcast> podcasts, Collection<Track> tracks,
-            Collection<Artwork> artwork)
+            Collection<InputRange> diagnostics, Collection<Artwork> artwork)
     {
         this.hdr = header;
         this.path = path;
         this.playlists = playlists;
         this.podcasts = podcasts;
         this.tracks = tracks;
+        this.diagnostics = diagnostics;
         this.artwork = artwork;
     }
 
@@ -91,6 +94,11 @@ public class Library
         return Collections.unmodifiableCollection(new ArrayList<T>(coll));
     }
     
+    public Collection<InputRange> getDiagnostics()
+    {
+        return copy(diagnostics);
+    }
+
     public Collection<Playlist> getPlaylists()
     {
         return copy(playlists);
