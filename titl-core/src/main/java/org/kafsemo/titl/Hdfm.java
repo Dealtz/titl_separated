@@ -123,14 +123,19 @@ public class Hdfm
      * @throws IOException
      * @throws ItlException
      */
+    //    Byte   Length  Comment
+    //    -----------------------
+    //      0       4     'hdfm'
+    //      4       4     L = header length
+    //      8       4     file length ?
+    //     12       4     ?
+    //     13       1     N = length of version string
+    //     14       N     application version string
+    //     14+N   L-N-17  ?
     public static Hdfm readInline(Input di, int length, int consumed) throws IOException, ItlException
     {
-        int hl = di.readInt();
+        // int hl = di.readInt(); // di has pointed to file length in ParseLibrary.java
 
-        if (hl != 0) {
-            throw new IOException("Expected zero for inline HDFM length (was " + hl + ")");
-        }
-        
         int fl = di.readInt();
 
         int unknown = di.readInt();
@@ -141,7 +146,12 @@ public class Hdfm
 
         String version = new String(avs, "us-ascii");
 
-        consumed += vsl + 13;
+        if (fl != 0) {
+            // throw new IOException("Expected zero for inline HDFM length (was " + fl + ")");
+            System.out.println("Expected zero for inline HDFM length in iTunes 10 (New we get length " + fl + "). So the file \"iTunes Library.itl\" was created by a newer version of iTunes 10 (Your version is " + version + ".");
+        }
+
+        consumed += vsl + 13 - 4;
 
         byte[] headerRemainder = new byte[length - consumed];
         di.readFully(headerRemainder);
