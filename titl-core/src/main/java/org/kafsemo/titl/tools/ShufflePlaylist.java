@@ -35,7 +35,7 @@ public class ShufflePlaylist
     public static void main(String[] args) throws IOException, ItlException
     {
         if (args.length != 3) {
-            System.err.println("Usage: Shuffle Playlist <library_in.itl> <library_out.itl> <playlist>");
+            System.err.println("Usage: ShufflePlaylist <library_in.itl> <library_out.itl> <playlist>");
             System.exit(5);
         }
 
