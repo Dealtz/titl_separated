@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.kafsemo.titl;
+package org.kafsemo.titl.tools;
 
 
 import java.io.File;
@@ -25,6 +25,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import org.kafsemo.titl.Hdfm;
+import org.kafsemo.titl.ItlException;
+import org.kafsemo.titl.Input;
+import org.kafsemo.titl.InputImpl;
 
 /**
  * Saves the unobfuscated contents in a new file without parse whole itl libarary byte by byte.
