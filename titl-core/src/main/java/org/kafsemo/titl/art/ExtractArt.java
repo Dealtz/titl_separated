@@ -22,9 +22,11 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -48,11 +50,20 @@ public class ExtractArt
 {
     public static void main(String[] args) throws FileNotFoundException, IOException
     {
-        File f = new File("/tmp/sample.itc2");
+        if (args.length != 2) {
+            System.err.println("Usage: ExtractArt <itunes_itc_fil.itc2> <output-directory>");
+            System.exit(5);
+        }
 
-        Collection<byte[]> streams = extract(f);
+        // File libFile = new File("/tmp/sample.itc2");
+        File libFile = new File(args[0]);
+        File outdir = new File(args[1]);
 
-//        int i = 0;
+        outdir.mkdir();
+
+        Collection<byte[]> streams = extract(libFile);
+
+       int i = 0;
 
         for (byte[] ba : streams) {
             BufferedImage img = ImageIO.read(new ByteArrayInputStream(ba));
@@ -62,10 +73,10 @@ public class ExtractArt
             jf.pack();
             jf.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
             jf.setVisible(true);
-//            OutputStream out = new FileOutputStream("sample" + i + ".png");
-//            out.write(ba);
-//            out.close();
-//            i++;
+            OutputStream out = new FileOutputStream(new File(outdir,"sample" + i + ".png"));
+            out.write(ba);
+            out.close();
+            i++;
         }
     }
 
