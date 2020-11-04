@@ -359,9 +359,9 @@ public class ParseLibrary
 
                     case 0x3B: // appleId for apps
                         String appleId = readGenericHohm(di);
-                        consumed = recLength;
                         thisChunk.more = String.format("0x%-3x", hohmType) + " [appleId]";
                         thisChunk.details = appleId;
+                        consumed = recLength;
                         // System.out.println(String.format("0x%08x: %s (%4d) %s \"%s\"", thisChunk.origin, thisChunk.type, thisChunk.length, thisChunk.more, thisChunk.details));
                         break;
 
@@ -560,7 +560,7 @@ public class ParseLibrary
 //                consumed = length;
 
                 if (Util.isIdentifier(type)) {
-                System.out.println(String.format("0x%08x: %s (%4d) %s \"%s\"", thisChunk.origin, thisChunk.type, thisChunk.length, thisChunk.more, thisChunk.details));
+                    System.out.println(String.format("0x%08x: %s (%4d) %s \"%s\"", thisChunk.origin, thisChunk.type, thisChunk.length, thisChunk.more, thisChunk.details));
                     throw new ItlException("Unhandled type: " + type);
                 } else {
                     throw new ItlException("Library format not understood; bad decryption (unhandled type: "
